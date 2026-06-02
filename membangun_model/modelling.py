@@ -24,8 +24,8 @@ warnings.filterwarnings('ignore')
 # Set tracking URI with authentication if token is provided
 dagshub.init(repo_owner="roiskhoiron", repo_name="Customer-Churn-Prediction-System", mlflow=True)
 # import os
-# if os.getenv('DAGSHUB_TOKEN'):
-#     mlflow.set_tracking_uri(f"https://{os.getenv('DAGSHUB_USERNAME')}:{os.getenv('DAGSHUB_TOKEN')}@dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow")
+# if os.getenv('DAGSHUB_USER_TOKEN'):
+#     mlflow.set_tracking_uri(f"https://{os.getenv('DAGSHUB_USERNAME')}:{os.getenv('DAGSHUB_USER_TOKEN')}@dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow")
 # else:
 #     mlflow.set_tracking_uri("https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow")
 
