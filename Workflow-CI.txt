@@ -15,3 +15,5 @@ CI Workflow Evidence (Advanced) – Updated
 **Dockerfile:** Added at repository root for building a reproducible image.
 
 **Status:** CI workflow configured and ready to run on push to `main`. Once you push the changes, GitHub Actions will trigger and execute the steps above.
+
+https://github.com/roiskhoiron/Customer-Churn-Prediction-System/actions/runs/26832103170/job/79117731766
