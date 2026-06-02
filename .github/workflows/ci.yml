@@ -25,27 +25,7 @@ jobs:
       with:
         python-version: '3.10'
 
-    # 4. Install DVC (needed for data pull)
-    - name: Install DVC
-      run: |
-        python -m pip install --upgrade pip
-        pip install dvc[s3]  # s3 support if needed; adjust for other remotes
-
-    # 5. Configure DVC remote authentication (DagsHub)
-    - name: DVC remote auth (DagsHub)
-      env:
-        DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-      run: |
-        dvc remote modify origin --local auth basic
-        dvc remote modify origin --local user "$DAGSHUB_USERNAME"
-        dvc remote modify origin --local password "$DAGSHUB_TOKEN"
-        dvc remote default origin
-
-    # 6. Pull dataset via DVC
-    - name: Pull dataset
-      run: |
-        dvc pull
+    # DVC steps removed – data CSV is now committed to the repository directly.
 
     # 7. Install MLProject dependencies
     - name: Install MLProject dependencies
