@@ -31,8 +31,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -r requirements.txt
         pip install -r MLProject/requirements.txt
-        pip install dagshub==0.1.0
+        pip install -r membangun_model/requirements.txt
 
     # 8. Run modelling.py (trains model & logs to DagsHub MLflow)
     - name: Run modelling script
