@@ -50,16 +50,16 @@ jobs:
         DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
       run: |
         pip install mlflow
-        MLFLOW_TRACKING_URI="https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow"
-        python -c "
-import mlflow, os
-from mlflow.tracking import MlflowClient
-client = MlflowClient(tracking_uri=os.environ['MLFLOW_TRACKING_URI'])
-exp = client.get_experiment_by_name('SMSML_Customer_Churn_Prediction')
-runs = client.search_runs(experiment_ids=[exp.experiment_id], max_results=1)
-if runs:
-    print(f'run_id={runs[0].info.run_id}')
-"
+        python - <<'PY'
+        import os
+        from mlflow.tracking import MlflowClient
+        os.environ['MLFLOW_TRACKING_URI'] = "https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow"
+        client = MlflowClient()
+        exp = client.get_experiment_by_name('SMSML_Customer_Churn_Prediction')
+        runs = client.search_runs([exp.experiment_id], max_results=1)
+        if runs:
+            print(f"run_id={runs[0].info.run_id}")
+        PY
 
     # 10. Install Docker dependencies (if any additional needed)
     - name: Install Docker dependencies (optional)
