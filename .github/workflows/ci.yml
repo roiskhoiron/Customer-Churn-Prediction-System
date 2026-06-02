@@ -38,10 +38,7 @@ jobs:
     # 8. Run modelling.py (trains model & logs to DagsHub MLflow)
     - name: Run modelling script
       env:
-        DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
-        MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-        MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_USER_TOKEN }}
+        MLFLOW_TRACKING_URI: sqlite:///mlflow.db
       run: |
         python membangun_model/modelling.py
 
@@ -49,11 +46,7 @@ jobs:
     - name: Get latest MLflow run ID
       id: get_run_id
       env:
-        DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-        MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-        MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
-        MLFLOW_TRACKING_URI: https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow
+        MLFLOW_TRACKING_URI: sqlite:///mlflow.db
       run: |
         pip install mlflow
         python - <<'PY'

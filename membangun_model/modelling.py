@@ -19,10 +19,8 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-if os.getenv('DAGSHUB_USERNAME') and os.getenv('DAGSHUB_TOKEN'):
-    os.environ['MLFLOW_TRACKING_USERNAME'] = os.getenv('DAGSHUB_USERNAME')
-    os.environ['MLFLOW_TRACKING_PASSWORD'] = os.getenv('DAGSHUB_TOKEN')
-mlflow.set_tracking_uri("https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow")
+if not os.getenv('MLFLOW_TRACKING_URI'):
+    mlflow.set_tracking_uri("https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow")
 
 # === Paths ===
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
