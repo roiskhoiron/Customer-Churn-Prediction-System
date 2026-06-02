@@ -27,37 +27,51 @@ jobs:
 
     # DVC steps removed – data CSV is now committed to the repository directly.
 
-    # 7. Install MLProject dependencies
-    - name: Install MLProject dependencies
+    # 7. Install dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r MLProject/requirements.txt
-        pip install dagshub==0.1.0  # ensures mlflow tracking works with DagsHub
+        pip install dagshub==0.1.0
 
-    # 8. Run MLflow project (main entry)
-    - name: Run MLflow project (main entry)
+    # 8. Run modelling.py (trains model & logs to DagsHub MLflow)
+    - name: Run modelling script
+      env:
+        DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
       run: |
-        mlflow run . -e main -P model_type=RandomForestClassifier
+        python membangun_model/modelling.py
 
-    # 9. Get latest MLflow run ID
+    # 9. Get latest MLflow run ID from DagsHub
     - name: Get latest MLflow run ID
       id: get_run_id
+      env:
+        DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
       run: |
-        RUN_ID=$(mlflow runs list -s "SMSML_Customer_Churn" --order-by "attributes.start_time DESC" -l 1 --no-verbose | tail -n 1 | awk '{print $1}')
-        echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
-        echo "Latest run ID: $RUN_ID"
+        pip install mlflow
+        MLFLOW_TRACKING_URI="https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow"
+        python -c "
+import mlflow, os
+from mlflow.tracking import MlflowClient
+client = MlflowClient(tracking_uri=os.environ['MLFLOW_TRACKING_URI'])
+exp = client.get_experiment_by_name('SMSML_Customer_Churn_Prediction')
+runs = client.search_runs(experiment_ids=[exp.experiment_id], max_results=1)
+if runs:
+    print(f'run_id={runs[0].info.run_id}')
+"
 
     # 10. Install Docker dependencies (if any additional needed)
     - name: Install Docker dependencies (optional)
       run: |
         pip install docker  # required for building image later
 
-    # 11. Upload MLflow artifacts to GitHub (placeholder)
-    - name: Upload artifacts to GitHub Release (placeholder)
+    # 11. Upload model artifacts to GitHub
+    - name: Upload model artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: mlflow-artifacts
-        path: ./mlruns
+        name: model-artifacts
+        path: membangun_model/models/
 
     # 12. Build Docker image
     - name: Build Docker image
