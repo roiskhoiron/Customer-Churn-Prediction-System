@@ -1,0 +1,7 @@
+[core]
+    remote = origin
+['remote "origin"']
+    url = https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.dvc
+    auth = basic
+    user = roiskhoiron
+    password = 0adba4f4c64a84534f764e834a848fa9b917f52

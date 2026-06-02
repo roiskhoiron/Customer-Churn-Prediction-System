@@ -1,13 +1,17 @@
-CI Workflow Evidence (Advanced)
-==============================
-Link GitHub Actions (run): https://github.com/roiskhoiron/Customer-Churn-Prediction-System/actions/workflows/ci.yml
-(Replace with actual link after push to GitHub)
+CI Workflow Evidence (Advanced) – Updated
+=====================================
 
-Workflow file: .github/workflows/ci.yml (Advanced level – includes checkout@v3, Python 3.12.7, environment check, MLflow project execution, run_id capture, artifact upload, Docker build & push.)
-MLProject folder: MLProject/
-  - mlproject.yaml (updated paths to modelling scripts)
-  - params.yaml
-  - requirements.txt
-  - conda.yaml
+**GitHub Actions Workflow:** .github/workflows/ci.yml
+- Python version: **3.10** (matches local venv)
+- DVC pull step added (uses DagsHub remote, authenticated via secrets `DAGSHUB_USERNAME` & `DAGSHUB_TOKEN`).
+- MLflow runs are tracked to DagsHub (no local URI).
+- Docker image is built and pushed to Docker Hub (`docker.io/${{ secrets.DOCKERHUB_USERNAME }}/smsml_churn:latest`).
+- Required secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `DAGSHUB_USERNAME`, `DAGSHUB_TOKEN`.
 
-Status: Advanced CI workflow configured and ready for execution on main branch.
+**MLProject folder:**
+- mlproject.yaml (paths updated to `membangun_model/modelling.py` and `.../modelling_tuning.py`).
+- params.yaml, requirements.txt, conda.yaml present.
+
+**Dockerfile:** Added at repository root for building a reproducible image.
+
+**Status:** CI workflow configured and ready to run on push to `main`. Once you push the changes, GitHub Actions will trigger and execute the steps above.

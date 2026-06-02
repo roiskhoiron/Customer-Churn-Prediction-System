@@ -7,45 +7,59 @@ on:
     branches: [ main ]
 
 env:
-  # Step 4: Check Env (example: ensure required env variables are set)
-  MLFLOW_TRACKING_URI: http://127.0.0.1:5000
-  DOCKER_IMAGE: ghcr.io/${{ github.repository_owner }}/smsml_churn:latest
+  # MLflow tracking will use DagsHub (set by dagshub.init)
+  DOCKER_IMAGE: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/smsml_churn:latest
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
     # 1. Set up job (implicit)
-    # 2. Run actions/checkout@v3
+    # 2. Checkout repository (v3)
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 3. Set up Python 3.12.7
+    # 3. Set up Python 3.10
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12.7'
+        python-version: '3.10'
 
-    # 4. Check Env
-    - name: Verify environment variables
+    # 4. Install DVC (needed for data pull)
+    - name: Install DVC
       run: |
-        echo "Checking required environment variables..."
-        if [ -z "$MLFLOW_TRACKING_URI" ]; then echo "MLFLOW_TRACKING_URI not set"; exit 1; fi
-        echo "Environment OK"
+        python -m pip install --upgrade pip
+        pip install dvc[s3]  # s3 support if needed; adjust for other remotes
 
-    # 5. Install dependencies (MLProject requirements)
+    # 5. Configure DVC remote authentication (DagsHub)
+    - name: DVC remote auth (DagsHub)
+      env:
+        DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+      run: |
+        dvc remote modify origin --local auth basic
+        dvc remote modify origin --local user "$DAGSHUB_USERNAME"
+        dvc remote modify origin --local password "$DAGSHUB_TOKEN"
+        dvc remote default origin
+
+    # 6. Pull dataset via DVC
+    - name: Pull dataset
+      run: |
+        dvc pull
+
+    # 7. Install MLProject dependencies
     - name: Install MLProject dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r MLProject/requirements.txt
-        pip install mlflow==3.12.0 dagshub==0.1.0
+        pip install dagshub==0.1.0  # ensures mlflow tracking works with DagsHub
 
-    # 6. Run mlflow project
+    # 8. Run MLflow project (main entry)
     - name: Run MLflow project (main entry)
       run: |
         mlflow run . -e main -P model_type=RandomForestClassifier
 
-    # 7. Get latest MLflow run_id
+    # 9. Get latest MLflow run ID
     - name: Get latest MLflow run ID
       id: get_run_id
       run: |
@@ -53,40 +67,37 @@ jobs:
         echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         echo "Latest run ID: $RUN_ID"
 
-    # 8. Install Python dependencies (again if needed for Docker build)
-    - name: Install additional dependencies for Docker
+    # 10. Install Docker dependencies (if any additional needed)
+    - name: Install Docker dependencies (optional)
       run: |
-        pip install docker
+        pip install docker  # required for building image later
 
-    # 9. Upload to GitHub (replace Google Drive)
+    # 11. Upload MLflow artifacts to GitHub (placeholder)
     - name: Upload artifacts to GitHub Release (placeholder)
       uses: actions/upload-artifact@v4
       with:
         name: mlflow-artifacts
         path: ./mlruns
 
-    # 10. Build Docker Model
+    # 12. Build Docker image
     - name: Build Docker image
       run: |
         docker build -t ${{ env.DOCKER_IMAGE }} .
 
-    # 11. Log in to Docker Hub
+    # 13. Log in to Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # 12. Tag Docker Image (already tagged in build step)
-    # 13. Push Docker Image
+    # 14. Push Docker image
     - name: Push Docker image
       run: |
         docker push ${{ env.DOCKER_IMAGE }}
 
-    # 14. Post Log in to Docker Hub (cleanup)
+    # 15. Logout Docker Hub (cleanup)
     - name: Logout Docker Hub
       run: docker logout
 
-    # 15. Post Set up Python 3.12.7 (implicit cleanup)
-    # 16. Post Run actions/checkout@v3 (implicit)
-    # 17. Complete job (implicit)
+    # 16. Complete job (implicit)

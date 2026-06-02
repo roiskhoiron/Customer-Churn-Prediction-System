@@ -74,9 +74,7 @@ print(f"[INFO] After SMOTE: {len(X_train_res)} training samples")
 
 # === MLflow Experiment ===
 
-# Specify the tracking URI for the MLflow server.
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
-
+# Tracking URI will be set by dagshub.init(mlflow=True) above
 mlflow.set_experiment("SMSML_Customer_Churn_Prediction")
 
 with mlflow.start_run() as run:
