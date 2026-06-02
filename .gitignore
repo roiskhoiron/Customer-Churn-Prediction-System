@@ -1,1 +1,6 @@
 docs/
+venv/
+
+# MLflow artefak & run metadata
+mlartifacts/
+mlruns/

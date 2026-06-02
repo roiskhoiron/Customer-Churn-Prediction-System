@@ -7,6 +7,7 @@ Logs results to MLflow.
 
 import pandas as pd
 import numpy as np
+import dagshub
 import mlflow
 import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
@@ -19,9 +20,12 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
+dagshub.init(repo_owner='roiskhoiron', repo_name='Customer-Churn-Prediction-System', mlflow=True)
+
 # === Paths ===
-RAW_DATA = "../data/wa_customer_churn_total.csv"
-MODEL_DIR = "models"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+RAW_DATA = os.path.join(SCRIPT_DIR, "..", "data", "wa_customer_churn_total.csv")
+MODEL_DIR = os.path.join(SCRIPT_DIR, "models")
 
 def load_and_preprocess():
     df = pd.read_csv(RAW_DATA)
@@ -119,6 +123,7 @@ def main():
     print(f"[INFO] Test ROC-AUC: {auc:.4f}")
 
     # MLflow logging
+    mlflow.set_tracking_uri("http://127.0.0.1:5000/")
     mlflow.set_experiment("SMSML_Customer_Churn_Tuning")
     with mlflow.start_run(run_name=f"rf_tuning_{pd.Timestamp.now().strftime('%Y%m%d_%H%M')}") as run:
         # Log best parameters

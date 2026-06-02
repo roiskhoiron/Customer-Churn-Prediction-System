@@ -7,6 +7,7 @@ Loads raw data, performs preprocessing (including SMOTE), trains model, logs to 
 
 import pandas as pd
 import numpy as np
+import dagshub
 import mlflow
 import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
@@ -19,9 +20,12 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
+dagshub.init(repo_owner='roiskhoiron', repo_name='Customer-Churn-Prediction-System', mlflow=True)
+
 # === Paths ===
-RAW_DATA = "../data/wa_customer_churn_total.csv"
-MODEL_DIR = "models"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+RAW_DATA = os.path.join(SCRIPT_DIR, "..", "data", "wa_customer_churn_total.csv")
+MODEL_DIR = os.path.join(SCRIPT_DIR, "models")
 
 # === Load Raw Data ===
 df = pd.read_csv(RAW_DATA)
@@ -69,6 +73,10 @@ X_train_res, y_train_res = smote.fit_resample(X_train_scaled, y_train)
 print(f"[INFO] After SMOTE: {len(X_train_res)} training samples")
 
 # === MLflow Experiment ===
+
+# Specify the tracking URI for the MLflow server.
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+
 mlflow.set_experiment("SMSML_Customer_Churn_Prediction")
 
 with mlflow.start_run() as run:

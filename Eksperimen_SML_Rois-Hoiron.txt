@@ -1,2 +1,1 @@
-[Placeholder] Screenshot of the completed notebook `Eksperimen_SML_Rois-Hooron.ipynb` with all cells executed, EDA plots, and preprocessing outputs.
-You can open the notebook and use `jupyter nbconvert --to html` to generate the full view.
+https://github.com/roiskhoiron/Customer-Churn-Prediction-System.git
