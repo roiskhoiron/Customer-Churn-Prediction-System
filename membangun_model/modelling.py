@@ -20,7 +20,8 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-dagshub.init(repo_owner='roiskhoiron', repo_name='Customer-Churn-Prediction-System', mlflow=True)
+# dagshub.init removed; set MLflow tracking to DagsHub
+mlflow.set_tracking_uri("https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System.mlflow")
 
 # === Paths ===
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
