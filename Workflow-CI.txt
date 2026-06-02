@@ -1,0 +1,13 @@
+CI Workflow Evidence (Advanced)
+==============================
+Link GitHub Actions (run): https://github.com/roiskhoiron/Customer-Churn-Prediction-System/actions/workflows/ci.yml
+(Replace with actual link after push to GitHub)
+
+Workflow file: .github/workflows/ci.yml (Advanced level – includes checkout@v3, Python 3.12.7, environment check, MLflow project execution, run_id capture, artifact upload, Docker build & push.)
+MLProject folder: MLProject/
+  - mlproject.yaml (updated paths to modelling scripts)
+  - params.yaml
+  - requirements.txt
+  - conda.yaml
+
+Status: Advanced CI workflow configured and ready for execution on main branch.
