@@ -132,6 +132,7 @@ def main():
     # MLflow logging
     mlflow.set_tracking_uri("http://127.0.0.1:5000/")
     mlflow.set_experiment("SMSML_Customer_Churn_Tuning")
+    mlflow.sklearn.autolog()
     with mlflow.start_run(run_name=f"rf_tuning_{pd.Timestamp.now().strftime('%Y%m%d_%H%M')}") as run:
         # Log best parameters
         mlflow.log_params(random_search.best_params_)
