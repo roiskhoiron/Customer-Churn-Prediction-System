@@ -77,6 +77,8 @@ print(f"[INFO] After SMOTE: {len(X_train_res)} training samples")
 # Tracking URI will be set by dagshub.init(mlflow=True) above
 mlflow.set_experiment("SMSML_Customer_Churn_Prediction")
 
+mlflow.sklearn.autolog()
+
 with mlflow.start_run() as run:
     model = RandomForestClassifier(
         n_estimators=200,
