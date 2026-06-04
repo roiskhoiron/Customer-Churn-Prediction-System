@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-import pandas as pd, mlflow, mlflow.sklearn, joblib, os, warnings
+import pandas as pd, mlflow, mlflow.sklearn, joblib, os, warnings, dagshub
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 warnings.filterwarnings('ignore')
 
-mlflow.set_tracking_uri("https://dagshub.com/roiskhoiron/Customer-Churn-EDA.mlflow")
+mlflow.set_tracking_uri("http://127.0.0.1:5050")
+dagshub.init(repo_owner='roiskhoiron', repo_name='Customer-Churn-EDA', mlflow=True)
+
 d = os.path.dirname(os.path.abspath(__file__))
 pre = os.path.join(d, "namadataset_preprocessing")
 mdir = os.path.join(d, "models")
@@ -16,7 +18,7 @@ y_test = pd.read_csv(os.path.join(pre, "y_test.csv")).squeeze("columns")
 print(f"[INFO] Train {X_train.shape}, Test {X_test.shape}")
 
 mlflow.set_experiment("SMSML_Customer_Churn_Prediction")
-mlflow.sklearn.autolog()
+# mlflow.sklearn.autolog()
 
 with mlflow.start_run() as run:
     model = RandomForestClassifier(n_estimators=200, max_depth=10, min_samples_split=5,

@@ -129,15 +129,28 @@ SMSML_Rois-Hoiron.zip
    python modelling_tuning.py # hyperparameter tuning (optional, for Advanced)
    ```
 
-3. **Run the API for Serving** (Kriteria 4)
+3. **Run the Prometheus Exporter** (system metrics)
+   ```bash
+   cd "../SMSML_Rois-Hoiron/Monitoring dan Logging"
+   python prometheus_exporter.py
+   ```
+   Exports `system_cpu_percent` & `system_memory_percent` at `http://localhost:8001/metrics`.
+
+4. **Run the API for Serving** (Kriteria 4)
    ```bash
    cd "../SMSML_Rois-Hoiron/Monitoring dan Logging"
    uvicorn Inference:app --host 0.0.0.0 --port 8000
    ```
+   Exposes `/predict`, `/health`, and Prometheus metrics at `http://localhost:8000/metrics`.
 
-4. **Check Prometheus metrics** at `http://localhost:8001/metrics` and ensure the Grafana dashboard is reachable.
-```bash
-    ## Installation & run Grafana on your desktop
+5. **Start Prometheus** (scrape metrics from both exporters)
+   ```bash
+   cd "../SMSML_Rois-Hoiron/Monitoring dan Logging"
+   prometheus --config.file=prometheus.yml
+   ```
+   Prometheus UI available at `http://localhost:9090`.
+
+6. **Install & Run Grafana** (lakukan salah satu sesuai OS):
 
     # ==============================================================================
     # UBUNTU / DEBIAN (LINUX APT)

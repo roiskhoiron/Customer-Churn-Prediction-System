@@ -3,6 +3,8 @@
 # MLflow artefak & run metadata
 mlartifacts/
 mlruns/
+mlflow.db
+mlflow_model/
 
 Monitoring dan Logging/data/
 
