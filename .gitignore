@@ -1,6 +1,17 @@
-docs/
-venv/
+.venv/
 
 # MLflow artefak & run metadata
 mlartifacts/
 mlruns/
+
+Monitoring dan Logging/data/
+
+# Byte-compiled
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Model artefacts (managed by DVC)
+Membangun_model/namadataset_preprocessing/
