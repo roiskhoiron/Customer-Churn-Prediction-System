@@ -49,8 +49,10 @@ def predict(req: PredictRequest):
             raise HTTPException(status_code=400, detail=f"Missing features: {', '.join(missing)}")
         # Align column order
         input_df = input_df[feature_names]
-        # Scale
-        input_scaled = scaler.transform(input_df)
+        # Scale only numeric columns as expected by the scaler
+        numeric_cols = ["tenure", "MonthlyCharges", "TotalCharges", "ChargesPerMonth", "TenureBin", "SeniorPartner"]
+        input_df[numeric_cols] = scaler.transform(input_df[numeric_cols])
+        input_scaled = input_df
         pred = model.predict(input_scaled)[0]
         prob = model.predict_proba(input_scaled)[0, 1]
         return {"prediction": int(pred), "probability": float(prob)}
