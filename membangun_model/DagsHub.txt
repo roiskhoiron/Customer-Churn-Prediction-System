@@ -1,1 +1,1 @@
-https://dagshub.com/roiskhoiron/Customer-Churn-Prediction-System
+https://dagshub.com/roiskhoiron/Customer-Churn-EDA
